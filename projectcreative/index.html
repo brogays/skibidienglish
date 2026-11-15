@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10120f">
+  <meta name="description" content="Lộ trình học từ vựng và ngữ pháp tiếng Anh cho IELTS và kỳ thi THPT Quốc gia.">
+  <title>Lingua Quest — Học tiếng Anh, lên cấp mỗi ngày</title>
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand"><div class="brand-mark">L</div><div class="brand-name">lingua<span>quest</span></div></div>
+      <div class="nav-label">Không gian học</div>
+      <nav class="nav-list" aria-label="Điều hướng chính">
+        <button class="nav-btn active" data-view="dashboard"><span class="nav-icon">⌂</span> Tổng quan</button>
+        <button class="nav-btn" data-view="vocabulary"><span class="nav-icon">▤</span> Từ vựng</button>
+        <button class="nav-btn" data-view="grammar"><span class="nav-icon">✳</span> Ngữ pháp</button>
+        <button class="nav-btn" data-view="community"><span class="nav-icon">◉</span> Cộng đồng</button>
+      </nav>
+      <div class="sidebar-spacer"></div>
+      <div class="streak-card"><div class="streak-top"><span>🔥 Chuỗi học tập</span><strong id="streak-number">1 ngày</strong></div><p>Mỗi ngày 15 phút — bạn đang xây dựng phiên bản giỏi tiếng Anh hơn.</p></div>
+      <a class="profile profile-link" id="account-link" href="auth.html" aria-label="Đăng nhập hoặc tạo tài khoản">
+        <div class="avatar" id="account-avatar">HV</div>
+        <div><div class="profile-name" id="account-name">Học viên</div><div class="profile-sub" id="account-sub">Đăng nhập hoặc đăng ký</div></div>
+        <span class="account-arrow" aria-hidden="true">↗</span>
+      </a>
+    </aside>
+    <main>
+      <header class="topbar"><div class="breadcrumb">Lingua Quest <span> / </span> <b id="page-name">Tổng quan</b></div><div class="top-actions"><span class="date-label" id="today-label"></span><a class="icon-button account-shortcut" id="account-shortcut" href="auth.html" title="Đăng nhập hoặc tạo tài khoản" aria-label="Đăng nhập hoặc tạo tài khoản">↗</a><button class="icon-button" id="daily-btn" title="Mục tiêu hôm nay" aria-label="Mục tiêu hôm nay">◷</button></div></header>
+      <div class="content">
+        <section class="view active" id="view-dashboard">
+          <div class="hero">
+            <div class="hero-copy"><div class="eyebrow">YOUR NEXT LEVEL STARTS HERE</div><h1>Chạm mục tiêu.<br><span>Mở khóa tương lai.</span></h1><p class="page-intro">Lộ trình tiếng Anh dành riêng cho IELTS &amp; THPT Quốc gia. Học gọn mỗi ngày, tiến bộ thật mỗi tuần.</p><div class="hero-buttons"><button class="primary-btn" data-go="vocabulary">✦ Bắt đầu học từ</button><button class="secondary-btn" data-go="grammar">Khám phá ngữ pháp <span>↗</span></button></div></div>
+            <div class="hero-art"><div class="orbit"><div class="orbit-core">文</div><span class="orbit-chip one">IELTS 7.0+</span><span class="orbit-chip two">THPT ready</span></div></div>
+          </div>
+          <div class="stat-grid">
+            <div class="stat-card"><div class="stat-label"><span>Từ đã ghi nhớ</span><span>✦</span></div><div class="stat-value" id="stat-learned">0 <small>từ</small></div></div>
+            <div class="stat-card"><div class="stat-label"><span>Cần ôn lại</span><span>↻</span></div><div class="stat-value" id="stat-review">0 <small>từ</small></div></div>
+            <div class="stat-card"><div class="stat-label"><span>Chuỗi học</span><span>🔥</span></div><div class="stat-value" id="stat-streak">0 <small>ngày</small></div></div>
+            <div class="stat-card"><div class="stat-label"><span>Mục tiêu hôm nay</span><span>◎</span></div><div class="stat-value"><span id="stat-goal">0</span><small>/ 15 phút</small></div></div>
+          </div>
+          <div class="bottom-grid">
+            <section class="panel study-plan"><div class="section-heading"><div><div class="eyebrow">AI STUDY PLAN</div><h2>Nhiệm vụ hôm nay</h2></div><span class="level-tag" id="mission-source">ĐANG TẢI</span></div>
+              <p class="study-sync-status" id="study-sync-status" role="status" aria-live="polite">Đăng nhập để đồng bộ tiến độ trên các thiết bị.</p>
+              <div class="ai-mission-list" id="ai-mission-list"></div>
+              <div class="review-heading"><div><b>Từ cần ôn lại</b><small>Nhắc sau 12 giờ kể từ lần học gần nhất</small></div><span id="review-count-label">0 từ</span></div>
+              <div class="review-list" id="review-list"><p class="review-empty">Đăng nhập để xem danh sách ôn tập cá nhân.</p></div>
+            </section>
+            <section class="panel progress-card"><div class="eyebrow weekly-eyebrow">MỤC TIÊU TUẦN · 105 PHÚT</div><h2 class="weekly-title">Tuần này của bạn</h2><div class="progress-ring" id="progress-ring"><strong id="progress-percent">0%</strong></div><p class="page-intro">Hôm nay <b id="today-minutes">0</b> phút · tuần này <b id="week-minutes">0</b> phút.</p></section>
+          </div>
+          <section class="game-section" aria-labelledby="games-title">
+            <div class="section-heading"><div><div class="eyebrow">LEARN BY PLAYING</div><h2 id="games-title">Luyện tập qua game</h2></div><button class="text-link" data-go="vocabulary">Mở kho từ vựng →</button></div>
+            <div class="game-grid">
+              <article class="game-card ammo"><div><div class="eyebrow">NẠP ĐẠN TỪ VỰNG</div><h3 class="game-title">Word Blaster</h3><p class="game-desc">Điền từ còn thiếu để nạp đạn. Từ vựng đúng, mục tiêu trúng!</p></div><div><div class="game-meta">✦ Luyện nhớ chủ động · nhiều round</div><a class="game-start" href="blastergun.html">Chơi ngay <span>→</span></a></div></article>
+              <article class="game-card boss"><div><div class="eyebrow boss-eyebrow">TRẬN ĐẤU TỪ VỰNG</div><h3 class="game-title">Boss Arena</h3><p class="game-desc">Đánh boss, tích lũy EXP, chọn thẻ sức mạnh và mua vũ khí bằng coin từ từ vựng.</p></div><div><div class="game-meta">✦ Chiến dịch nhiều boss · nâng cấp nhân vật</div><a class="game-start" href="boss.html">Vào đấu trường <span>→</span></a></div></article>
+            </div>
+          </section>
+        </section>
+
+        <section class="view" id="view-vocabulary">
+          <div class="eyebrow">VOCABULARY LAB</div><h1>Kho từ vựng của bạn</h1><p class="page-intro">Từ vựng theo chủ đề, trình độ và mục tiêu thi. Học theo cách phù hợp nhất với bạn.</p>
+          <div class="toolbar"><label class="search-box"><span>⌕</span><input id="word-search" type="search" placeholder="Tìm từ, nghĩa hoặc chủ đề..."></label><select class="filter-select" id="word-filter" aria-label="Lọc từ theo mục tiêu"><option value="all">Tất cả mục tiêu</option><option value="ielts">IELTS</option><option value="thpt">THPT Quốc gia</option></select><select class="filter-select" id="set-filter" aria-label="Lọc theo bộ từ"><option value="all">Tất cả bộ từ</option></select><button class="secondary-btn" id="create-set-btn">＋ Tạo bộ từ</button></div>
+          <div class="deck-banner"><div><b>🧠 Học chủ động, nhớ lâu hơn</b><p>Chọn một chế độ bên dưới — mỗi lượt chơi giúp củng cố từ theo cách khác nhau.</p></div><button class="primary-btn" data-game="flash">Học thẻ từ <span>→</span></button></div>
+          <div class="section-heading"><div><div class="eyebrow">CURATED FOR YOUR EXAMS</div><h2 id="word-count-title">Từ thiết yếu</h2></div><span class="page-intro" id="word-count"></span></div>
+          <div class="vocab-grid" id="vocab-grid"></div>
+          <p class="small-note">Nghĩa tiếng Việt và câu ví dụ do Lingua Quest biên soạn để hỗ trợ học tập. Tra cứu phát âm, từ loại và định nghĩa đầy đủ tại <a href="https://dictionary.cambridge.org/" target="_blank" rel="noopener noreferrer">Cambridge Dictionary</a>. Không phải nội dung được Cambridge/Oxford cấp phép.</p>
+        </section>
+
+        <section class="view" id="view-grammar">
+          <div class="eyebrow">GRAMMAR MASTERCLASS</div><h1>Ngữ pháp, học để dùng</h1><p class="page-intro">Hệ thống kiến thức cốt lõi cho IELTS và THPT Quốc gia. Chọn chủ điểm để mở bài học riêng, xem hướng dẫn, làm bài tập và tra cứu thêm.</p>
+          <div class="toolbar"><label class="search-box"><span>⌕</span><input id="grammar-search" type="search" placeholder="Tìm chủ điểm ngữ pháp..."></label><select class="filter-select" id="grammar-filter" aria-label="Lọc ngữ pháp"><option value="all">Tất cả chủ điểm</option><option value="ielts">IELTS</option><option value="thpt">THPT Quốc gia</option></select></div>
+          <div class="grammar-layout"><div class="grammar-list" id="grammar-list"></div></div>
+        </section>
+
+        <section class="view" id="view-community">
+          <div class="eyebrow">STUDY TOGETHER</div><h1>Mỗi mẹo hay, một bước tiến</h1><p class="page-intro">Chia sẻ cách làm bài, kinh nghiệm ôn thi và động lực học tập với cộng đồng.</p>
+          <div class="community-layout"><div><div class="section-heading"><div><div class="eyebrow">COMMUNITY FEED</div><h2>Góc chia sẻ</h2></div><span class="level-tag">CÙNG TIẾN BỘ</span></div><div class="feed" id="tip-feed"></div></div>
+            <aside class="panel"><div class="eyebrow">SHARE YOUR KNOW-HOW</div><h2 class="share-title">Đăng mẹo học của bạn</h2><p class="page-intro share-intro">Một chiến lược nhỏ của bạn có thể giúp ai đó tự tin hơn.</p><form class="tip-form" id="tip-form"><input class="form-input" name="title" placeholder="Tiêu đề mẹo..." maxlength="70" required><select class="form-select" name="tag"><option>Từ vựng</option><option>Ngữ pháp</option><option>IELTS</option><option>THPT Quốc gia</option><option>Động lực</option></select><textarea name="body" placeholder="Chia sẻ cách bạn làm nhé..." maxlength="500" required></textarea><button class="primary-btn" type="submit">Đăng chia sẻ ↗</button></form></aside>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+  <nav class="mobile-nav" aria-label="Điều hướng trên di động">
+    <button class="nav-btn active" data-view="dashboard"><span class="nav-icon">⌂</span>Tổng quan</button><button class="nav-btn" data-view="vocabulary"><span class="nav-icon">▤</span>Từ vựng</button><button class="nav-btn" data-view="grammar"><span class="nav-icon">✳</span>Ngữ pháp</button><button class="nav-btn" data-view="community"><span class="nav-icon">◉</span>Cộng đồng</button>
+  </nav>
+  <div class="game-modal" id="game-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-card"><div class="modal-head"><div><div class="eyebrow" id="modal-eyebrow">WORD BLASTER</div><h2 id="modal-title">Nạp đạn từ vựng</h2></div><button class="close-modal" id="close-modal" aria-label="Đóng">×</button></div>
+      <div class="game-progress"><span id="game-progress-fill"></span></div>
+      <div id="game-content"></div>
+    </div>
+  </div>
+  <div class="game-modal" id="set-modal" role="dialog" aria-modal="true" aria-labelledby="set-modal-title">
+    <div class="modal-card"><div class="modal-head"><div><div class="eyebrow">PERSONAL VOCABULARY DECK</div><h2 id="set-modal-title">Tạo bộ từ của bạn</h2></div><button class="close-modal" id="close-set-modal" aria-label="Đóng">×</button></div><p class="page-intro set-description">Tạo bộ theo chủ đề hoặc mục tiêu thi. Mỗi dòng nhập theo mẫu <b>từ tiếng Anh | nghĩa tiếng Việt</b>.</p><form class="tip-form" id="set-form"><input class="form-input" name="name" placeholder="Tên bộ từ, ví dụ: Environment IELTS" maxlength="45" required><textarea class="set-words" name="words" placeholder="sustainable | bền vững&#10;contribute | đóng góp" required></textarea><p class="small-note set-hint">Hãy thêm ít nhất một từ. Mỗi dòng cần có từ và nghĩa, ngăn cách bằng dấu |.</p><div class="set-actions"><button class="primary-btn" type="submit">Lưu bộ từ</button><button class="secondary-btn" type="button" id="cancel-set">Hủy</button></div></form></div>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="api-config.js"></script>
+  <script src="grammar-data.js" defer></script>
+  <script src="index.js" defer></script>
+  <script type="module" src="study-sync.js"></script>
+  <script type="module" src="account.js"></script>
+</body>
+</html>

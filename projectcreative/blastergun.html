@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090e12">
+  <meta name="description" content="Word Blaster — nạp đạn cho game arcade bằng vốn từ tiếng Anh của bạn.">
+  <title>Word Blaster — Nạp đạn bằng tri thức</title>
+  <link rel="stylesheet" href="blastergun.css">
+</head>
+<body>
+  <header class="topbar"><a class="brand" href="index.html" aria-label="Lingua Quest — về trang học"><span class="brand-mark">L</span><span class="brand-name">lingua<span>quest</span> <span class="brand-suffix">/ ARCADE</span></span></a><div class="top-right"><button class="sound-button" id="sound-toggle" aria-pressed="false">♫ <span id="sound-label">Âm thanh: tắt</span></button><a class="top-link" href="index.html">← Về học tập</a></div></header>
+  <main class="wrap">
+    <section class="intro"><div><div class="eyebrow">VOCABULARY COMBAT SIMULATOR · 01</div><h1>WORD <span>BLASTER</span></h1><p class="subtitle">Ngắm chuẩn. Né drone. Nạp đạn bằng vốn từ của bạn.</p></div><div class="pilot"><span>ĐIỂM CAO NHẤT</span><span>XP CỦA BẠN</span><b id="best-score">00000</b><b id="total-xp">000</b></div></section>
+    <section class="layout" aria-label="Game Word Blaster">
+      <div class="arena">
+        <div class="hud"><div class="hud-group"><div class="stat"><span class="hud-label">SCORE</span><b class="hud-value" id="score">00000</b></div><div class="stat"><span class="hud-label">DRONES LEFT</span><b class="hud-value" id="drone-count">0 / 0</b></div><div class="stat"><span class="hud-label">SHIELD</span><b class="hearts" id="lives">♥ ♥ ♥</b></div></div><div class="round-pill" id="round-pill">ROUND 01</div><div class="hud-group right"><div class="stat"><span class="hud-label">STREAK</span><b class="hud-value" id="streak">×0</b></div><div><b class="ammo-count" id="ammo-count">08</b><span class="ammo-label">LASER<br>CELLS</span></div></div></div>
+        <div class="stage">
+          <canvas id="game-canvas" width="960" height="540" aria-label="Đấu trường bắn drone arcade"></canvas><div class="vignette"></div><div class="scanlines"></div><span class="arena-label" id="arena-label">SECTOR 01 · TRAINING SIMULATION</span><span class="coords" id="coords">X: 0480 · Y: 0490</span>
+          <section class="layer" id="intro-layer"><div class="card"><div class="icon">✦</div><div class="eyebrow">READY, PILOT?</div><h2>Tri thức là đạn dược.</h2><p class="copy">Điều khiển phi thuyền, né drone và bắn hạ mục tiêu. Khi hết đạn, trạm tiếp tế kiểm tra vốn từ của bạn.</p><div class="controls-copy"><div><kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> hoặc phím mũi tên — di chuyển</div><div><kbd>SPACE</kbd> — bắn &nbsp; <kbd>P</kbd> — tạm dừng</div></div><button class="primary" id="start-game">VÀO ĐẤU TRƯỜNG&nbsp; →</button></div></section>
+          <section class="layer hidden" id="pause-layer"><div class="card"><div class="icon">Ⅱ</div><div class="eyebrow">SIMULATION PAUSED</div><h2>Tạm nghỉ một chút.</h2><p class="copy">Các drone đang đứng yên. Sẵn sàng quay lại chiến đấu?</p><button class="primary" id="resume-game">TIẾP TỤC&nbsp; →</button></div></section>
+          <section class="layer hidden" id="quiz-layer"><div class="card quiz-card"><div class="quiz-head"><span class="quiz-icon">◈</span><div><div class="eyebrow quiz-eyebrow">SUPPLY CHECK · NẠP ĐẠN</div><h2>Mở khóa kho đạn</h2><p class="quiz-desc">Trả lời càng chuẩn, phi thuyền tiếp tế càng nhiều.</p></div><span class="quiz-round" id="quiz-round">ROUND 01</span></div><div class="word-card"><div class="word-label">Điền từ tiếng Anh còn thiếu</div><p class="clue" id="quiz-clue"></p><div class="sentence" id="quiz-sentence"></div></div><form class="answer-form" id="answer-form"><input class="answer" id="answer-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="60" placeholder="Gõ từ tiếng Anh..." aria-label="Đáp án từ vựng" required><button class="primary" id="answer-submit" type="submit">KIỂM TRA&nbsp; ↗</button></form><p class="feedback" id="quiz-feedback" aria-live="polite">Mẹo: nhớ lại từ qua nghĩa và ngữ cảnh, đừng đoán chữ cái.</p><div class="quiz-footer"><span class="streak-info" id="quiz-streak">SUPPLY STREAK · 0</span><a class="quit" href="#" id="quit-game">Thoát trận</a></div></div></section>
+          <section class="layer hidden" id="round-layer"><div class="card"><div class="icon">✧</div><div class="eyebrow">SECTOR CLEARED</div><h2 id="round-title">Round hoàn thành!</h2><p class="copy" id="round-copy"></p><button class="primary" id="next-round">VÀO ROUND TIẾP THEO&nbsp; →</button></div></section>
+          <section class="layer hidden" id="gameover-layer"><div class="card"><div class="icon gameover-icon">↻</div><div class="eyebrow gameover-eyebrow">SIMULATION ENDED</div><h2>Phi công, làm tốt lắm.</h2><p class="copy" id="gameover-copy"></p><button class="primary" id="restart-game">THỬ LẠI&nbsp; ↻</button></div></section>
+        </div>
+        <div class="actions"><span class="hint"><b>PRO TIP</b> · Bắn theo nhịp, giữ đạn cho round boss.</span><div class="action-buttons"><button class="small-btn" id="pause-button" aria-label="Tạm dừng" title="Tạm dừng (P)">Ⅱ</button><button class="small-btn" id="restart-button" aria-label="Chơi lại" title="Chơi lại">↻</button></div></div>
+        <div class="touch"><div class="dpad"><button class="touch-btn up" data-hold="ArrowUp" aria-label="Di chuyển lên">↑</button><button class="touch-btn left" data-hold="ArrowLeft" aria-label="Di chuyển trái">←</button><button class="touch-btn down" data-hold="ArrowDown" aria-label="Di chuyển xuống">↓</button><button class="touch-btn right" data-hold="ArrowRight" aria-label="Di chuyển phải">→</button></div><button class="fire" id="touch-fire">BẮN LASER<small>NHẤN GIỮ</small></button></div>
+      </div>
+      <aside class="side">
+        <section class="side-card"><div class="side-head"><h2>Tiến độ round</h2><span id="wave-fraction">0%</span></div><div class="progress"><span id="wave-bar"></span></div><div class="caption"><span id="wave-left">Chờ xuất phát</span><span id="wave-total">—</span></div></section>
+        <section class="side-card"><div class="side-head"><h2>Tiếp tế từ vựng</h2><span>ĐỘ CHÍNH XÁC</span></div><div class="rewards"><div class="reward"><span class="badge wrong">MISS</span><span>Sai / bỏ trống</span><strong>+1 viên</strong></div><div class="reward"><span class="badge near">CLOSE</span><span>Gần đúng · lệch 1 ký tự</span><strong>+2 viên</strong></div><div class="reward"><span class="badge right">HIT</span><span>Chính xác</span><strong>+5 viên</strong></div></div></section>
+        <section class="side-card"><div class="side-head"><h2>Nhiệm vụ chiến dịch</h2><span>ENDLESS</span></div><div class="round-list"><div class="round-row"><span class="glyph">01</span><span><b>Scout drones</b>Làm quen điều khiển</span></div><div class="round-row"><span class="glyph">02</span><span><b>Formation shift</b>Drone nhanh, đội hình dày</span></div><div class="round-row"><span class="glyph">B</span><span><b>Boss sector · mỗi round 3</b>Boss cần nhiều phát bắn</span></div></div></section>
+        <section class="side-card"><div class="side-head"><h2>Vừa chơi vừa học</h2><span>LEARN LOOP</span></div><p class="tip">Mỗi lượt nạp đạn là một lần chủ động nhớ lại. Từ đã gặp có thể xuất hiện lại ở round sau để bạn ghi nhớ lâu hơn.</p></section>
+      </aside>
+    </section>
+    <p class="footer">Đây là game arcade giả lập với phi thuyền và drone mục tiêu, không có hình ảnh bạo lực. Bộ từ và câu ví dụ do Lingua Quest biên soạn; bấm <a href="https://dictionary.cambridge.org/" target="_blank" rel="noopener noreferrer">Cambridge Dictionary</a> để tra cứu sâu hơn. Tiến độ lưu trong trình duyệt này.</p>
+  </main>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script type="module" src="blastergun.js"></script>
+</body>
+</html>

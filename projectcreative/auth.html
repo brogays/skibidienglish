@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10130f">
+  <meta name="description" content="Tạo tài khoản Lingua Quest để bắt đầu hành trình học tiếng Anh của bạn.">
+  <title>Đăng nhập / Đăng ký — Lingua Quest</title>
+  <link rel="stylesheet" href="auth.css">
+</head>
+<body>
+  <div class="auth-backdrop" aria-hidden="true">
+    <span class="glow glow-one"></span>
+    <span class="glow glow-two"></span>
+    <span class="starfield"></span>
+  </div>
+  <main class="auth-layout">
+    <section class="showcase" aria-label="Giới thiệu Lingua Quest">
+      <a class="brand" href="index.html" aria-label="Lingua Quest — về trang chủ">
+        <span class="brand-mark">L</span>
+        <span class="brand-name">lingua<span>quest</span></span>
+      </a>
+      <div class="showcase-content">
+        <div class="eyebrow"><span class="live-dot"></span> YOUR NEXT LEVEL STARTS HERE</div>
+        <h1>Học hôm nay.<br><span>Bứt phá ngày mai.</span></h1>
+        <p class="showcase-copy">Một tài khoản. Một hành trình của riêng bạn. Theo dõi tiến độ học, chinh phục từ vựng và từng bước tiến gần mục tiêu IELTS &amp; THPT.</p>
+        <div class="showcase-features">
+          <div class="feature"><span class="feature-icon">✦</span><span><b>Tiến bộ có dấu ấn</b><small>Lưu hồ sơ an toàn với Firebase</small></span></div>
+          <div class="feature"><span class="feature-icon">◈</span><span><b>Học theo cách của bạn</b><small>Từ vựng, ngữ pháp và game học tập</small></span></div>
+        </div>
+      </div>
+      <div class="orbit-art" aria-hidden="true">
+        <div class="orbit orbit-a"></div><div class="orbit orbit-b"></div>
+        <div class="planet"><span>文</span></div>
+        <span class="orbit-label label-ielts">IELTS 7.0+</span>
+        <span class="orbit-label label-thpt">THPT READY</span>
+        <span class="orbit-star star-a">✦</span><span class="orbit-star star-b">✧</span>
+      </div>
+      <div class="showcase-foot"><span>LEARN WITH PURPOSE</span><span>01 — 04</span></div>
+    </section>
+
+    <section class="auth-area" aria-label="Biểu mẫu tài khoản">
+      <a class="back-home" href="index.html"><span aria-hidden="true">←</span> Về trang chủ</a>
+      <div class="auth-card" id="auth-card" data-mode="login">
+        <div class="mobile-brand brand">
+          <span class="brand-mark">L</span><span class="brand-name">lingua<span>quest</span></span>
+        </div>
+        <div class="card-heading">
+          <div class="eyebrow">WELCOME TO LINGUA QUEST</div>
+          <h2 id="form-title">Chào mừng trở lại</h2>
+          <p id="form-description">Đăng nhập để tiếp tục hành trình học tập của bạn.</p>
+        </div>
+        <div class="mode-switch" role="group" aria-label="Chọn đăng nhập hoặc đăng ký">
+          <button class="mode-tab active" id="login-tab" type="button" aria-current="page" data-mode="login">Đăng nhập</button>
+          <a class="mode-tab" id="register-tab" href="register.html">Tạo tài khoản</a>
+          <span class="switch-indicator" aria-hidden="true"></span>
+        </div>
+
+        <div id="form-panel">
+          <form id="auth-form" novalidate>
+            <label class="field" id="name-field" hidden>
+              <span>Họ và tên</span>
+              <span class="input-wrap"><span class="input-icon" aria-hidden="true">✦</span><input id="display-name" name="name" type="text" autocomplete="name" maxlength="80" placeholder="Tên bạn muốn mọi người gọi" aria-describedby="display-name-error" required></span>
+              <small class="field-error" id="display-name-error" hidden></small>
+            </label>
+            <label class="field">
+              <span>Email</span>
+              <span class="input-wrap"><span class="input-icon" aria-hidden="true">✉</span><input id="email" name="email" type="email" autocomplete="email" maxlength="254" placeholder="ban@email.com" aria-describedby="email-error" required></span>
+              <small class="field-error" id="email-error" hidden></small>
+            </label>
+            <label class="field">
+              <span>Mật khẩu <small id="password-hint">Tối thiểu 8 ký tự</small></span>
+              <span class="input-wrap"><span class="input-icon" aria-hidden="true">◈</span><input id="password" name="password" type="password" autocomplete="current-password" minlength="8" placeholder="Nhập mật khẩu" aria-describedby="password-hint password-error" required><button class="password-toggle" id="toggle-password" type="button" aria-label="Hiện mật khẩu">Hiện</button></span>
+              <small class="field-error" id="password-error" hidden></small>
+            </label>
+            <label class="field" id="confirm-field" hidden>
+              <span>Nhập lại mật khẩu</span>
+              <span class="input-wrap"><span class="input-icon" aria-hidden="true">◈</span><input id="confirm-password" name="confirm-password" type="password" autocomplete="new-password" minlength="8" placeholder="Nhập lại mật khẩu" aria-describedby="confirm-password-error" required><button class="password-toggle" id="toggle-confirm-password" type="button" aria-label="Hiện mật khẩu xác nhận">Hiện</button></span>
+              <small class="field-error" id="confirm-password-error" hidden></small>
+            </label>
+            <div class="form-options" id="login-options">
+              <span class="secure-note"><span aria-hidden="true">⌑</span> Kết nối bảo mật</span>
+              <button class="text-button" id="forgot-password" type="button">Quên mật khẩu?</button>
+            </div>
+            <label class="consent" id="consent-field" hidden>
+              <input id="consent" type="checkbox">
+              <span>Tôi đồng ý tạo tài khoản và lưu hồ sơ học tập trên Firebase.</span>
+            </label>
+            <button class="submit-button" id="submit-button" type="submit"><span class="button-label">Đăng nhập</span><span class="button-arrow" aria-hidden="true">↗</span><span class="spinner" aria-hidden="true"></span></button>
+            <p class="form-message" id="form-message" role="status" aria-live="polite"></p>
+            <a class="firebase-help" id="firebase-help" href="https://console.firebase.google.com/project/english-f3d71/authentication" target="_blank" rel="noopener noreferrer" hidden>Mở Firebase Authentication để kiểm tra cấu hình ↗</a>
+          </form>
+          <p class="switch-prompt" id="switch-prompt">Chưa có tài khoản? <a class="text-button" href="register.html">Tạo tài khoản miễn phí</a></p>
+        </div>
+
+        <section class="session-panel" id="session-panel" aria-live="polite" hidden>
+          <div class="session-check" aria-hidden="true">✓</div>
+          <div class="eyebrow">TÀI KHOẢN ĐANG HOẠT ĐỘNG</div>
+          <h3 id="session-name">Xin chào!</h3>
+          <p class="session-email" id="session-email"></p>
+          <p class="session-message" id="session-message" role="status"></p>
+          <a class="firebase-help" id="session-help" href="https://console.firebase.google.com/project/english-f3d71/firestore/databases/-default-/rules" target="_blank" rel="noopener noreferrer" hidden>Mở Firestore Rules ↗</a>
+          <a class="submit-button session-home" href="index.html">Tiếp tục học <span class="button-arrow" aria-hidden="true">↗</span></a>
+          <button class="text-button session-signout" id="signout-button" type="button">Đăng xuất khỏi tài khoản</button>
+        </section>
+        <div class="card-footer"><span>LINGUA QUEST · LEARN EVERY DAY</span><span class="footer-lock">⌑ Dữ liệu được bảo vệ</span></div>
+      </div>
+      <p class="auth-disclaimer">Bằng cách tiếp tục, bạn tạo tài khoản học tập cá nhân trên Lingua Quest.</p>
+    </section>
+  </main>
+  <script type="module" src="auth.js"></script>
+</body>
+</html>
