@@ -1,0 +1,27 @@
+{
+  "firestore": {
+    "rules": "firestore.rules"
+  },
+  "hosting": {
+    "public": ".",
+    "ignore": [
+      "firebase.json",
+      "firestore.rules",
+      "index.py",
+      "requirements.txt",
+      "Dockerfile",
+      "AI_SETUP.md",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "/api/**",
+        "run": {
+          "serviceId": "linguaquest-api",
+          "region": "asia-southeast1"
+        }
+      }
+    ]
+  }
+}

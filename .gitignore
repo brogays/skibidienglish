@@ -1,0 +1,12 @@
+.env
+.env.*
+!.env.example
+.firebase/
+.venv/
+__pycache__/
+*.py[cod]
+firebase-debug.log
+firestore-debug.log
+*.pem
+*service-account*.json
+.DS_Store
