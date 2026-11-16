@@ -6,6 +6,9 @@ let resolveAuth;
 let authResolved = false;
 const authListeners = new Set();
 const authReady = new Promise(resolve => { resolveAuth = resolve; });
+const apiBaseUrl = window.LINGUA_API_BASE_URL?.trim() || "";
+const localHosts = new Set(["localhost", "127.0.0.1", "::1", "[::1]"]);
+const localOnly = !apiBaseUrl && localHosts.has(window.location.hostname);
 let activeSeconds = 0;
 let activeUserId = null;
 let lastActivityAt = 0;
@@ -18,7 +21,7 @@ function localDateKey() {
 
 function trackActiveMinute() {
   const notifyMinute = () => window.dispatchEvent(new Event("lingua-study-minute"));
-  if (!currentUser) {
+  if (!currentUser || localOnly) {
     notifyMinute();
     return;
   }
@@ -62,7 +65,6 @@ async function request(path, options = {}) {
   await authReady;
   if (!currentUser) return null;
   const token = await currentUser.getIdToken();
-  const apiBaseUrl = window.LINGUA_API_BASE_URL?.trim();
   if (!apiBaseUrl && window.location.hostname.endsWith(".github.io")) {
     throw new Error("API thống kê chưa được cấu hình cho GitHub Pages. Hãy đặt repository variable LINGUA_API_BASE_URL.");
   }
@@ -92,7 +94,7 @@ function showSyncError(error) {
 
 async function record(payload) {
   if (!currentUser) await authReady;
-  if (!currentUser) return false;
+  if (!currentUser || localOnly) return false;
   try {
     await request("/api/v1/events", {
       method: "POST",
@@ -109,7 +111,7 @@ async function record(payload) {
 }
 
 async function loadDashboard(legacyWords) {
-  if (!currentUser) return null;
+  if (!currentUser || localOnly) return null;
   await request("/api/v1/migrate", {
     method: "POST",
     body: JSON.stringify({ words: legacyWords.slice(0, 400) })
@@ -120,6 +122,7 @@ async function loadDashboard(legacyWords) {
 }
 
 window.linguaLearning = {
+  localOnly,
   record,
   loadDashboard,
   subscribe(listener) {

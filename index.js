@@ -27,11 +27,6 @@
       {word:"variety",type:"noun",meaning:"sự đa dạng, nhiều loại",example:"A variety of activities keeps children engaged.",level:"B1",exam:["thpt","ielts"],topic:"Education"}
     ];
     
-    const START_TIPS = [
-      {name:"Minh Anh",initial:"MA",tag:"IELTS",title:"Task 2: đừng học thuộc nguyên bài mẫu",body:"Mình học theo khung lập luận thay vì thuộc lòng essay. Mỗi chủ đề ghi 2 ý chính, ví dụ thực tế và một cụm từ nối. Vào phòng thi gặp đề lạ vẫn xoay sở được!",likes:12,time:"2 giờ trước"},
-      {name:"Gia Huy",initial:"GH",tag:"Từ vựng",title:"Ôn từ bằng câu của chính mình",body:"Mỗi từ mới mình tự đặt một câu liên quan đến cuộc sống hằng ngày. Cuối tuần che nghĩa tiếng Việt rồi tự nhớ lại — hiệu quả hơn đọc danh sách nhiều lần.",likes:8,time:"Hôm qua"},
-      {name:"Thảo Vy",initial:"TV",tag:"THPT Quốc gia",title:"Đọc câu trước, chọn từ sau",body:"Với câu điền từ, mình xác định loại từ cần điền trước (noun, verb, adjective...), sau đó nhìn collocation và ngữ cảnh. Cách này loại được khá nhiều đáp án nhiễu.",likes:19,time:"2 ngày trước"}
-    ];
     const STORAGE_KEY = "linguaquest.v1";
     function loadState() {
       try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
@@ -53,8 +48,6 @@
       learned: Array.isArray(saved.learned) ? saved.learned : [],
       customWords: Array.isArray(saved.customWords) ? saved.customWords : [],
       customSets: Array.isArray(saved.customSets) ? saved.customSets : [],
-      tips: Array.isArray(saved.tips) ? saved.tips : [],
-      likes: Array.isArray(saved.likes) ? saved.likes : [],
       minutes: saved.minutesVersion === 1 && saved.lastStudy === currentDay ? Number(saved.minutes) || 0 : 0,
       minutesVersion: 1,
       lastStudy: saved.lastStudy === currentDay ? saved.lastStudy : "",
@@ -68,8 +61,10 @@
     const allWords = () => [...WORDS, ...state.customWords];
     let cloudDashboard = null;
     function syncEvent(payload) {
-      window.linguaLearning?.record(payload).then(() => {
-        if (payload.event_type !== "study" && authenticatedUser) refreshCloudDashboard(authenticatedUser);
+      const recording = window.linguaLearning?.record(payload);
+      if (!recording) return;
+      recording.then(saved => {
+        if (saved && payload.event_type !== "study" && authenticatedUser) refreshCloudDashboard(authenticatedUser);
       }).catch(error => {
         console.error("Không đồng bộ được hoạt động học:", error);
       });
@@ -136,7 +131,16 @@
       const source = document.getElementById("mission-source");
       const missionList = document.getElementById("ai-mission-list");
       const reviewList = document.getElementById("review-list");
-      if (!cloudDashboard) return;
+      if (!cloudDashboard) {
+        if (authenticatedUser && window.linguaLearning?.localOnly) {
+          status.textContent = "Chế độ localhost: tiến độ lưu trên trình duyệt này; đồng bộ và AI cần Python API.";
+          source.textContent = "CHẾ ĐỘ LOCAL";
+          missionList.innerHTML = `<p class="review-empty">Khởi chạy Python API để đồng bộ tiến độ và nhận nhiệm vụ AI.</p>`;
+          document.getElementById("review-count-label").textContent = "0 từ";
+          reviewList.innerHTML = `<p class="review-empty">Danh sách ôn tập đồng bộ cần Python API.</p>`;
+        }
+        return;
+      }
       status.textContent = cloudDashboard.missions.message;
       source.textContent = cloudDashboard.missions.source === "gemini" ? "AI CÁ NHÂN HÓA" : cloudDashboard.missions.source === "not_configured" ? "AI CHƯA BẬT" : "AI TẠM LỖI";
       const completed = new Set(cloudDashboard.missions.completed || []);
@@ -208,7 +212,6 @@
       window.scrollTo({top:0, behavior:"smooth"});
       if (name === "vocabulary") renderWords();
       if (name === "grammar") renderGrammar();
-      if (name === "community") renderTips();
     }
     document.querySelectorAll("[data-view]").forEach(button => button.addEventListener("click", () => showView(button.dataset.view)));
     document.querySelectorAll("[data-go]").forEach(button => button.addEventListener("click", () => showView(button.dataset.go)));
@@ -250,33 +253,6 @@
     }
     document.getElementById("grammar-search").addEventListener("input", renderGrammar);
     document.getElementById("grammar-filter").addEventListener("change", renderGrammar);
-    function renderTips() {
-      const feed = document.getElementById("tip-feed");
-      const tips = [...state.tips.map((tip,index)=>({...tip, own:true, key:`own-${index}`})), ...START_TIPS.map((tip,index)=>({...tip, key:`start-${index}`}))];
-      feed.innerHTML = tips.map(tip => `<article class="tip-card"><div class="tip-author"><span class="tip-avatar">${escapeHTML(tip.initial || "B")}</span><span><b>${escapeHTML(tip.name || "Bạn")}</b><small>${escapeHTML(tip.time || "Vừa xong")}</small></span><span class="tip-tag">${escapeHTML(tip.tag)}</span></div><h3>${escapeHTML(tip.title)}</h3><p>${escapeHTML(tip.body)}</p><div class="tip-actions"><button class="${state.likes.includes(tip.key) ? "liked" : ""}" data-like="${escapeHTML(tip.key)}">♡ ${Number(tip.likes)||0} hữu ích</button><button data-share="${escapeHTML(tip.title)}">↗ Chia sẻ</button></div></article>`).join("");
-      feed.querySelectorAll("[data-like]").forEach(button => button.addEventListener("click", () => {
-        const key = button.dataset.like;
-        if (state.likes.includes(key)) state.likes = state.likes.filter(item => item !== key);
-        else state.likes.push(key);
-        if (key.startsWith("own-")) {
-          const index = Number(key.slice(4)); state.tips[index].likes = Math.max(0, Number(state.tips[index].likes)||0) + (state.likes.includes(key) ? 1 : -1);
-        }
-        saveState(); renderTips();
-      }));
-      feed.querySelectorAll("[data-share]").forEach(button => button.addEventListener("click", async () => {
-        try { await navigator.clipboard.writeText(button.dataset.share); showToast("Đã sao chép tiêu đề chia sẻ."); }
-        catch (error) { showToast("Trình duyệt không cho phép sao chép nội dung."); }
-      }));
-    }
-    document.getElementById("tip-form").addEventListener("submit", event => {
-      event.preventDefault();
-      const data = new FormData(event.currentTarget);
-      const title = String(data.get("title") || "").trim();
-      const body = String(data.get("body") || "").trim();
-      if (!title || !body) return;
-      state.tips.unshift({name:"Bạn",initial:"HV",tag:String(data.get("tag")),title,body,likes:0,time:"Vừa xong"});
-      state.xp += 10; touchStudy(); saveState(); event.currentTarget.reset(); renderTips(); showToast("Đăng chia sẻ thành công · +10 XP");
-    });
     const setModal = document.getElementById("set-modal");
     function closeSetModal() { setModal.classList.remove("open"); document.body.style.overflow = ""; }
     document.getElementById("create-set-btn").addEventListener("click", () => {
@@ -382,7 +358,7 @@
     document.getElementById("daily-btn").addEventListener("click", () => showToast(`Mục tiêu hôm nay: ${state.minutes}/15 phút · ${state.learned.length} từ đã học`));
     const now = new Date();
     document.getElementById("today-label").textContent = new Intl.DateTimeFormat("vi-VN",{weekday:"long",day:"numeric",month:"long"}).format(now);
-    renderStats(); renderWords(); renderGrammar(); renderTips();
+    renderStats(); renderWords(); renderGrammar();
     function connectStudySync() {
       if (!window.linguaLearning) return;
       window.linguaLearning.subscribe(user => {

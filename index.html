@@ -75,10 +75,44 @@
         </section>
 
         <section class="view" id="view-community">
-          <div class="eyebrow">STUDY TOGETHER</div><h1>Mỗi mẹo hay, một bước tiến</h1><p class="page-intro">Chia sẻ cách làm bài, kinh nghiệm ôn thi và động lực học tập với cộng đồng.</p>
-          <div class="community-layout"><div><div class="section-heading"><div><div class="eyebrow">COMMUNITY FEED</div><h2>Góc chia sẻ</h2></div><span class="level-tag">CÙNG TIẾN BỘ</span></div><div class="feed" id="tip-feed"></div></div>
-            <aside class="panel"><div class="eyebrow">SHARE YOUR KNOW-HOW</div><h2 class="share-title">Đăng mẹo học của bạn</h2><p class="page-intro share-intro">Một chiến lược nhỏ của bạn có thể giúp ai đó tự tin hơn.</p><form class="tip-form" id="tip-form"><input class="form-input" name="title" placeholder="Tiêu đề mẹo..." maxlength="70" required><select class="form-select" name="tag"><option>Từ vựng</option><option>Ngữ pháp</option><option>IELTS</option><option>THPT Quốc gia</option><option>Động lực</option></select><textarea name="body" placeholder="Chia sẻ cách bạn làm nhé..." maxlength="500" required></textarea><button class="primary-btn" type="submit">Đăng chia sẻ ↗</button></form></aside>
+          <div class="eyebrow">STUDY TOGETHER</div><h1>Cộng đồng Lingua Quest</h1><p class="page-intro">Chia sẻ hành trình học tập và trò chuyện riêng với bạn bè.</p>
+          <div class="social-tabs" role="tablist" aria-label="Khu vực cộng đồng">
+            <button class="social-tab active" id="community-feed-tab" type="button" role="tab" aria-selected="true" aria-controls="community-feed-panel" data-social-tab="feed">Bảng tin</button>
+            <button class="social-tab" id="community-messages-tab" type="button" role="tab" aria-selected="false" aria-controls="community-messages-panel" data-social-tab="messages">Tin nhắn</button>
           </div>
+          <p class="social-status" id="social-status" role="status" aria-live="polite">Đang kết nối cộng đồng…</p>
+          <section class="social-panel active" id="community-feed-panel" role="tabpanel" aria-labelledby="community-feed-tab">
+            <div class="community-feed-column">
+              <form class="post-composer panel" id="post-form">
+                <div class="post-composer-heading"><span class="social-avatar" id="composer-avatar">HV</span><div><b id="composer-name">Học viên</b><small>Chia sẻ với cộng đồng học tập</small></div></div>
+                <label class="sr-only" for="post-body">Nội dung bài viết</label>
+                <textarea id="post-body" name="body" maxlength="2000" placeholder="Hôm nay bạn học được điều gì?" required></textarea>
+                <div class="post-composer-footer"><label class="sr-only" for="post-tag">Chủ đề bài viết</label><select class="form-select" id="post-tag" name="tag"><option>Từ vựng</option><option>Ngữ pháp</option><option>IELTS</option><option>THPT Quốc gia</option><option>Động lực</option></select><span class="character-count" id="post-character-count">0/2000</span><button class="primary-btn" id="post-submit" type="submit">Đăng bài ↗</button></div>
+              </form>
+              <div class="feed" id="community-feed" aria-label="Bài viết cộng đồng"></div>
+            </div>
+          </section>
+          <section class="social-panel" id="community-messages-panel" role="tabpanel" aria-labelledby="community-messages-tab" hidden>
+            <div class="messenger-shell">
+              <aside class="messenger-sidebar" aria-label="Danh sách trò chuyện">
+                <h2>Tin nhắn</h2>
+                <label class="sr-only" for="contact-search">Tìm học viên để trò chuyện</label>
+                <input class="messenger-search" id="contact-search" type="search" autocomplete="off" placeholder="Tìm học viên…">
+                <p class="contact-search-hint" id="contact-search-hint">Nhập ít nhất 2 ký tự để tìm học viên.</p>
+                <div class="contact-results" id="contact-results" aria-label="Kết quả tìm kiếm"></div>
+                <h3 class="conversation-heading">Trò chuyện gần đây</h3>
+                <div class="conversation-list" id="conversation-list"></div>
+              </aside>
+              <section class="chat-panel" aria-label="Khung trò chuyện">
+                <div class="chat-placeholder" id="chat-placeholder"><span aria-hidden="true">✉</span><b>Chọn một cuộc trò chuyện</b><p>Tìm một học viên để bắt đầu nhắn tin riêng.</p></div>
+                <div class="chat-conversation" id="chat-conversation" hidden>
+                  <header class="chat-header"><span class="social-avatar" id="chat-avatar">HV</span><div><b id="chat-name">Học viên</b><small>Tin nhắn riêng tư</small></div></header>
+                  <div class="chat-messages" id="chat-messages" role="log" aria-live="polite" aria-relevant="additions text"></div>
+                  <form class="chat-composer" id="chat-form"><label class="sr-only" for="chat-body">Tin nhắn</label><textarea id="chat-body" name="body" maxlength="1000" rows="1" placeholder="Nhập tin nhắn…" required></textarea><button class="primary-btn" id="chat-submit" type="submit" aria-label="Gửi tin nhắn">Gửi ↗</button></form>
+                </div>
+              </section>
+            </div>
+          </section>
         </section>
       </div>
     </main>
@@ -101,5 +135,6 @@
   <script src="index.js" defer></script>
   <script type="module" src="study-sync.js"></script>
   <script type="module" src="account.js"></script>
+  <script type="module" src="social.js"></script>
 </body>
 </html>

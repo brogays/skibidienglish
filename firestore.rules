@@ -2,11 +2,20 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /users/{userId} {
-      function isOwner() {
-        return request.auth != null && request.auth.uid == userId;
-      }
+    function signedIn() {
+      return request.auth != null;
+    }
 
+    function isOwner(userId) {
+      return signedIn() && request.auth.uid == userId;
+    }
+
+    function hasMatchingPublicName(name) {
+      return signedIn()
+        && get(/databases/$(database)/documents/publicProfiles/$(request.auth.uid)).data.displayName == name;
+    }
+
+    match /users/{userId} {
       function hasValidProfile() {
         return request.resource.data.keys().hasOnly([
           'displayName',
@@ -29,12 +38,221 @@ service cloud.firestore {
         && request.resource.data.updatedAt is timestamp;
       }
 
-      allow read: if isOwner();
-      allow create: if isOwner() && hasValidProfile();
-      allow update: if isOwner()
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId) && hasValidProfile();
+      allow update: if isOwner(userId)
         && hasValidProfile()
         && request.resource.data.createdAt == resource.data.createdAt;
       allow delete: if false;
+    }
+
+    match /publicProfiles/{userId} {
+      function hasValidPublicProfile() {
+        return request.resource.data.keys().hasOnly([
+          'displayName',
+          'displayNameLower',
+          'updatedAt'
+        ])
+        && request.resource.data.keys().hasAll([
+          'displayName',
+          'displayNameLower',
+          'updatedAt'
+        ])
+        && request.resource.data.displayName is string
+        && request.resource.data.displayName.size() >= 2
+        && request.resource.data.displayName.size() <= 80
+        && request.resource.data.displayNameLower is string
+        && request.resource.data.displayNameLower.size() >= 2
+        && request.resource.data.displayNameLower.size() <= 80
+        && request.resource.data.updatedAt is timestamp
+        && request.resource.data.updatedAt == request.time;
+      }
+
+      allow get, list: if signedIn();
+      allow create, update: if isOwner(userId) && hasValidPublicProfile();
+      allow delete: if false;
+    }
+
+    match /communityPosts/{postId} {
+      function hasValidPost() {
+        return request.resource.data.keys().hasOnly([
+          'authorId',
+          'authorName',
+          'body',
+          'tag',
+          'createdAt'
+        ])
+        && request.resource.data.keys().hasAll([
+          'authorId',
+          'authorName',
+          'body',
+          'tag',
+          'createdAt'
+        ])
+        && request.resource.data.authorId == request.auth.uid
+        && request.resource.data.authorName is string
+        && request.resource.data.authorName.size() >= 2
+        && request.resource.data.authorName.size() <= 80
+        && hasMatchingPublicName(request.resource.data.authorName)
+        && request.resource.data.body is string
+        && request.resource.data.body.size() >= 1
+        && request.resource.data.body.size() <= 2000
+        && request.resource.data.tag in [
+          'Từ vựng',
+          'Ngữ pháp',
+          'IELTS',
+          'THPT Quốc gia',
+          'Động lực'
+        ]
+        && request.resource.data.createdAt is timestamp
+        && request.resource.data.createdAt == request.time;
+      }
+
+      allow get, list: if signedIn();
+      allow create: if signedIn() && hasValidPost();
+      allow update, delete: if false;
+
+      match /likes/{userId} {
+        allow get, list: if signedIn()
+          && exists(/databases/$(database)/documents/communityPosts/$(postId));
+        allow create: if isOwner(userId)
+          && exists(/databases/$(database)/documents/communityPosts/$(postId))
+          && request.resource.data.keys().hasOnly(['createdAt'])
+          && request.resource.data.keys().hasAll(['createdAt'])
+          && request.resource.data.createdAt is timestamp
+          && request.resource.data.createdAt == request.time;
+        allow update: if false;
+        allow delete: if isOwner(userId)
+          && exists(/databases/$(database)/documents/communityPosts/$(postId));
+      }
+
+      match /comments/{commentId} {
+        function hasValidComment() {
+          return request.resource.data.keys().hasOnly([
+            'authorId',
+            'authorName',
+            'body',
+            'createdAt'
+          ])
+          && request.resource.data.keys().hasAll([
+            'authorId',
+            'authorName',
+            'body',
+            'createdAt'
+          ])
+          && request.resource.data.authorId == request.auth.uid
+          && request.resource.data.authorName is string
+          && request.resource.data.authorName.size() >= 2
+          && request.resource.data.authorName.size() <= 80
+          && hasMatchingPublicName(request.resource.data.authorName)
+          && request.resource.data.body is string
+          && request.resource.data.body.size() >= 1
+          && request.resource.data.body.size() <= 500
+          && request.resource.data.createdAt is timestamp
+          && request.resource.data.createdAt == request.time;
+        }
+
+        allow get, list: if signedIn()
+          && exists(/databases/$(database)/documents/communityPosts/$(postId));
+        allow create: if signedIn()
+          && exists(/databases/$(database)/documents/communityPosts/$(postId))
+          && hasValidComment();
+        allow update: if false;
+        allow delete: if isOwner(resource.data.authorId)
+          && exists(/databases/$(database)/documents/communityPosts/$(postId));
+      }
+    }
+
+    match /conversations/{conversationId} {
+      function isParticipant() {
+        return signedIn()
+          && request.auth.uid in resource.data.memberIds;
+      }
+
+      function hasValidMembers(memberIds) {
+        return memberIds is list
+          && memberIds.size() == 2
+          && memberIds[0] is string
+          && memberIds[1] is string
+          && memberIds[0] < memberIds[1]
+          && request.auth.uid in memberIds
+          && conversationId == memberIds[0] + '_' + memberIds[1];
+      }
+
+      allow get, list: if isParticipant();
+      allow create: if signedIn()
+        && hasValidMembers(request.resource.data.memberIds)
+        && request.resource.data.keys().hasOnly([
+          'memberIds',
+          'lastMessage',
+          'lastSenderId',
+          'createdAt',
+          'updatedAt'
+        ])
+        && request.resource.data.keys().hasAll([
+          'memberIds',
+          'lastMessage',
+          'lastSenderId',
+          'createdAt',
+          'updatedAt'
+        ])
+        && request.resource.data.lastMessage == ''
+        && request.resource.data.lastSenderId == ''
+        && request.resource.data.createdAt is timestamp
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.updatedAt is timestamp
+        && request.resource.data.updatedAt == request.time;
+      allow update: if isParticipant()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          'lastMessage',
+          'lastSenderId',
+          'updatedAt'
+        ])
+        && request.resource.data.lastMessage is string
+        && request.resource.data.lastMessage.size() >= 1
+        && request.resource.data.lastMessage.size() <= 160
+        && request.resource.data.lastSenderId == request.auth.uid
+        && request.resource.data.updatedAt is timestamp
+        && request.resource.data.updatedAt == request.time;
+      allow delete: if false;
+
+      match /messages/{messageId} {
+        function conversationHasCurrentUser() {
+          return signedIn()
+            && request.auth.uid in get(
+              /databases/$(database)/documents/conversations/$(conversationId)
+            ).data.memberIds;
+        }
+
+        function hasValidMessage() {
+          return request.resource.data.keys().hasOnly([
+            'senderId',
+            'senderName',
+            'body',
+            'createdAt'
+          ])
+          && request.resource.data.keys().hasAll([
+            'senderId',
+            'senderName',
+            'body',
+            'createdAt'
+          ])
+          && request.resource.data.senderId == request.auth.uid
+          && request.resource.data.senderName is string
+          && request.resource.data.senderName.size() >= 2
+          && request.resource.data.senderName.size() <= 80
+          && hasMatchingPublicName(request.resource.data.senderName)
+          && request.resource.data.body is string
+          && request.resource.data.body.size() >= 1
+          && request.resource.data.body.size() <= 1000
+          && request.resource.data.createdAt is timestamp
+          && request.resource.data.createdAt == request.time;
+        }
+
+        allow get, list: if conversationHasCurrentUser();
+        allow create: if conversationHasCurrentUser() && hasValidMessage();
+        allow update, delete: if false;
+      }
     }
   }
 }
